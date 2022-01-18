@@ -125,6 +125,10 @@ class MorseTranslator {
     return translation;
   }
 
+  translateStringToSignal(message) {
+    return this.translateMorseToSignal(this.translateStringToMorse(message));
+  }
+
   isSpacer(character) {
     return character === 'L' || character === 'W';
   }
