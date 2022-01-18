@@ -26,8 +26,10 @@ class SignalTranslator {
 
       translation += signal;
 
+      const lastCharacter = nextCharacter === undefined;
+
       // Space out dits and dahs
-      if (!this.isSpacer(character) && !this.isSpacer(nextCharacter)) {
+      if (!lastCharacter && !this.isSpacer(character) && !this.isSpacer(nextCharacter)) {
         translation += '0';
       }
     }
