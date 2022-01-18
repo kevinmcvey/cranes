@@ -58,10 +58,17 @@ const MORSE_DICTIONARY = {
   'OVER': '-.-',
 };
 
+const SIGNAL_STATE_DICTIONARY = {
+  '.': '1',
+  '-': '111',
+  'L': '000',
+  'W': '0000000',
+};
+
 class MorseTranslator {
   constructor() {}
 
-  translate(message) {
+  translateStringToMorse(message) {
     let translation = '';
 
     for (let index = 0; index < message.length; index += 1) {
@@ -89,6 +96,37 @@ class MorseTranslator {
     }
 
     return translation;
+  }
+
+  translateMorseToSignal(message) {
+    let translation = '';
+
+    for (let index = 0; index < message.length; index += 1) {
+      const character = message[index];
+      const nextCharacter = message[index + 1];
+
+      const signal = SIGNAL_STATE_DICTIONARY[character.toUpperCase()];
+
+      // Skip unknown morse characters. This shouldn't ever happen, I should probably throw.
+      if (signal === undefined) {
+        continue;
+      }
+
+      translation += signal;
+
+      const lastCharacter = nextCharacter === undefined;
+
+      // Space out dits and dahs
+      if (!lastCharacter && !this.isSpacer(character) && !this.isSpacer(nextCharacter)) {
+        translation += '0';
+      }
+    }
+
+    return translation;
+  }
+
+  isSpacer(character) {
+    return character === 'L' || character === 'W';
   }
 }
 
