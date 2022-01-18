@@ -3,15 +3,9 @@
 const Light = require('./light');
 
 class Crane {
-  constructor(canvasId, lightParameters) {
-    this.canvasId = canvasId;
-    this.lights = this.constructLights(lightParameters);
-  }
-
-  constructLights(parameters) {
-    return parameters.map((blob) => {
-      return new Light(this.canvasId, blob.cx, blob.cy, blob.r, blob.state);
-    });
+  constructor(name, lights) {
+    this.name = name;
+    this.lights = lights;
   }
 
   on() {

@@ -8,31 +8,60 @@ const IMAGE_WIDTH = 4032;
 const IMAGE_HEIGHT = 2548;
 const IMAGE_ASPECT_RATIO = IMAGE_WIDTH / IMAGE_HEIGHT;
 
+const BACKGROUND_DIV_ID = 'background';
+const CANVAS_ID = 'lights';
+
+// function constructLights(canvasId, blobs) {
+function constructLights(canvas, blobs) {
+  return blobs.map((blob) => {
+    return new Light(canvas, blob.cx, blob.cy, blob.r, blob.state);
+  });
+}
+
 window.onload = () => {
-  new CenteredHtml('background', IMAGE_ASPECT_RATIO);
-  new CenteredHtml('lights', IMAGE_ASPECT_RATIO);
+  new CenteredHtml(BACKGROUND_DIV_ID, IMAGE_ASPECT_RATIO);
+  new CenteredHtml(CANVAS_ID, IMAGE_ASPECT_RATIO);
 
-  const leftCrane1 = new Crane('lights', [
-    { cx: 874, cy: 1088, r: 25, state: 'off' },
-    { cx: 1124, cy: 1078, r: 25, state: 'on' },
-    { cx: 1233, cy: 1080, r: 25, state: 'off' },
-  ]);
+  const canvas = document.getElementById(CANVAS_ID);
 
-  const leftCrane2 = new Crane('lights', [
-    { cx: 1100, cy: 1120, r: 25, state: 'off' },
-    { cx: 1284, cy: 1046, r: 25, state: 'on' },
-    { cx: 1368, cy: 1081, r: 25, state: 'on' },
-  ]);
+  const leftCrane1Lights = constructLights(
+    canvas,
+    [
+      { cx: 874, cy: 1088, r: 25, state: 'off' },
+      { cx: 1124, cy: 1078, r: 25, state: 'on' },
+      { cx: 1233, cy: 1080, r: 25, state: 'off' },
+    ]
+  );
 
-  const midCrane = new Crane('lights', [
-    { cx: 1936, cy: 1160, r: 25, state: 'off' },
-    { cx: 2018, cy: 1196, r: 25, state: 'off' },
-  ]);
+  const leftCrane2Lights = constructLights(
+    canvas,
+    [
+      { cx: 1100, cy: 1120, r: 25, state: 'off' },
+      { cx: 1284, cy: 1046, r: 25, state: 'on' },
+      { cx: 1368, cy: 1081, r: 25, state: 'on' },
+    ]
+  );
 
-  const rightCrane = new Crane('lights', [
-    { cx: 3492, cy: 1344, r: 25, state: 'off' },
-    { cx: 3225, cy: 1361, r: 25, state: 'off' },
-  ]);
+  const centerCraneLights = constructLights(
+    canvas,
+    [
+      { cx: 1936, cy: 1160, r: 25, state: 'off' },
+      { cx: 2018, cy: 1196, r: 25, state: 'off' },
+    ]
+  );
+
+  const rightCraneLights = constructLights(
+    canvas,
+    [
+      { cx: 3492, cy: 1344, r: 25, state: 'off' },
+      { cx: 3225, cy: 1361, r: 25, state: 'off' },
+    ]
+  );
+
+  const leftCrane1 = new Crane('left_1', leftCrane1Lights);
+  const leftCrane2 = new Crane('left_2', leftCrane2Lights);
+  const centerCrane = new Crane('center', centerCraneLights);
+  const rightCrane = new Crane('right', rightCraneLights);
 
   setInterval(function() {
     leftCrane1.toggle();
@@ -43,7 +72,7 @@ window.onload = () => {
   }, 1300);
 
   setInterval(function() {
-    midCrane.toggle();
+    centerCrane.toggle();
   }, 900);
 
   setInterval(function() {
