@@ -63,6 +63,8 @@ const SIGNAL_STATE_DICTIONARY = {
   '-': '111',
   'L': '000',
   'W': '0000000',
+
+  'SPACER': '0',
 };
 
 class MorseTranslator {
@@ -118,7 +120,7 @@ class MorseTranslator {
 
       // Space out dits and dahs
       if (!lastCharacter && !this.isSpacer(character) && !this.isSpacer(nextCharacter)) {
-        translation += '0';
+        translation += SIGNAL_STATE_DICTIONARY.SPACER;
       }
     }
 
