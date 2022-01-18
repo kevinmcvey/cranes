@@ -52,29 +52,43 @@ const MORSE_DICTIONARY = {
   '"': '.-..-.',
   '?': '..--..',
   '/': '-..-.',
+
+  'LETTER_GAP': 'L',
+  'WORD_GAP': 'W',
+  'OVER': '-.-',
 };
 
 class MorseTranslator {
   constructor() {}
 
   translate(message) {
-    const translations = [...message].map((character) => {
-      // Space is a special case used by the morse interpreter, return it as a space.
-      if (character === ' ') {
-        return ' ';
-      }
+    let translation = '';
 
-      const translation = MORSE_DICTIONARY[character.toUpperCase()];
+    for (let index = 0; index < message.length; index += 1) {
+      const character = message[index];
+      const nextCharacter = message[index + 1];
+
+      const translatedCharacter = MORSE_DICTIONARY[character.toUpperCase()];
+      let spacer = '';
 
       // Skip characters we don't know
-      if (translation === undefined) {
-        return '';
+      if (translatedCharacter === undefined) {
+        continue;
       }
 
-      return translation;
-    });
+      if (nextCharacter === ' ') {
+        spacer = MORSE_DICTIONARY.WORD_GAP;
+      } else if (nextCharacter === undefined) {
+        // End of string gets the... artistic flourish... of the "OVER" Prosign
+        spacer = MORSE_DICTIONARY.WORD_GAP + MORSE_DICTIONARY.OVER;
+      } else {
+        spacer = MORSE_DICTIONARY.LETTER_GAP;
+      }
 
-    return translations.join('');
+      translation += (translatedCharacter + spacer);
+    }
+
+    return translation;
   }
 }
 
