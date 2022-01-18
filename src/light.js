@@ -16,14 +16,13 @@ class Light {
   }
 
   constructGradient() {
-    const r1 = this.radius / 5;
-    const r2 = this.radius;
+    const gradient = this.context.createRadialGradient(
+      this.cx, this.cy, 0, this.cx, this.cy, this.radius);
 
-    const gradient = this.context.createRadialGradient(this.cx, this.cy, r1, this.cx, this.cy, r2);
     gradient.addColorStop(0, "rgba(255, 255, 255, 1.0)");
-    gradient.addColorStop(0.1, "rgba(255, 0, 0, 1.0)");
-    gradient.addColorStop(0.7, "rgba(255, 255, 255, 0.2)");
-    gradient.addColorStop(1, "rgba(255, 255, 255, 0.0)");
+    gradient.addColorStop(0.25, "rgba(255, 0, 0, 1.0)");
+    gradient.addColorStop(0.6, "rgba(255, 0, 0, 0.2)");
+    gradient.addColorStop(1, "rgba(255, 0, 0, 0.0)");
 
     return gradient;
   }
