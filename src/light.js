@@ -2,8 +2,8 @@
 
 // TODO: Fade in and out
 class Light {
-  constructor(canvasId, cx, cy, radius, state = 'off') {
-    this.canvas = document.getElementById(canvasId);
+  constructor(canvas, cx, cy, radius, state = 'off') {
+    this.canvas = canvas;
     this.context = this.canvas.getContext("2d");
 
     this.cx = cx;
