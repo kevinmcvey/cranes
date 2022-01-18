@@ -3,6 +3,10 @@
 const CenteredHtml = require('./centered-html');
 const Crane = require('./crane');
 const Light = require('./light');
+const MorseTranslator = require('./morse-translator');
+const Scene = require('./scene');
+
+const SCRIPT = require('./script');
 
 const IMAGE_WIDTH = 4032;
 const IMAGE_HEIGHT = 2548;
@@ -63,21 +67,10 @@ window.onload = () => {
   const centerCrane = new Crane('center', centerCraneLights);
   const rightCrane = new Crane('right', rightCraneLights);
 
-  setInterval(function() {
-    leftCrane1.toggle();
-  }, 1000);
+  const morseTranslator = new MorseTranslator();
 
-  setInterval(function() {
-    leftCrane2.toggle();
-  }, 1300);
-
-  setInterval(function() {
-    centerCrane.toggle();
-  }, 900);
-
-  setInterval(function() {
-    rightCrane.toggle();
-  }, 2000);
+  const scene = new Scene([leftCrane1, leftCrane2, centerCrane, rightCrane], SCRIPT, morseTranslator);
+  scene.start();
 
   // Prevent the window from scrolling on mobile
   window.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
