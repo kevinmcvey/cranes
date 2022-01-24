@@ -1,12 +1,12 @@
 'use strict';
 
+const AudioContextSingleton = require('./audio-context-singleton');
 const CenteredHtml = require('./centered-html');
 const Crane = require('./crane');
 const Light = require('./light');
-const MorseTranslator = require('./morse-translator');
-const Scene = require('./scene');
-
-const SCRIPT = require('./script');
+const MorseBuffer = require('./morse-buffer');
+const MorseStreamer = require('./morse-streamer');
+const Oscillator = require('./oscillator');
 
 const IMAGE_WIDTH = 4032;
 const IMAGE_HEIGHT = 2548;
@@ -15,7 +15,8 @@ const IMAGE_ASPECT_RATIO = IMAGE_WIDTH / IMAGE_HEIGHT;
 const BACKGROUND_DIV_ID = 'background';
 const CANVAS_ID = 'lights';
 
-// function constructLights(canvasId, blobs) {
+const MORSE_INTERVAL_MS = 100;
+
 function constructLights(canvas, blobs) {
   return blobs.map((blob) => {
     return new Light(canvas, blob.cx, blob.cy, blob.r, blob.state);
@@ -67,10 +68,30 @@ window.onload = () => {
   const centerCrane = new Crane('center', centerCraneLights);
   const rightCrane = new Crane('right', rightCraneLights);
 
-  const morseTranslator = new MorseTranslator();
+  const morseBuffer = new MorseBuffer();
+  const morseStreamer = new MorseStreamer(morseBuffer, MORSE_INTERVAL_MS);
 
-  const scene = new Scene([leftCrane1, leftCrane2, centerCrane, rightCrane], SCRIPT, morseTranslator);
-  scene.start();
+  const oscillator = new Oscillator(AudioContextSingleton, 641); // 300 sounds nice too
+
+  window.addEventListener('mouseup', () => {
+    oscillator.start();
+  });
+
+  window.oscillator = oscillator;
+
+  // TODO: Make it possible to delay a callback. That way audio and visual can sync without
+  //       using setTimeout which is not great.
+  morseStreamer.registerCallback((bit) => {
+    if (bit === '1') {
+      setTimeout(() => { leftCrane1.on(); }, 16);
+      oscillator.setGain(0.1);
+    } else if (bit === '0') {
+      setTimeout(() => { leftCrane1.off(); }, 16);
+      oscillator.setGain(0.0);
+    }
+  });
+
+  // TODO: Silence and pause if move to a different tab
 
   // Prevent the window from scrolling on mobile
   window.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
