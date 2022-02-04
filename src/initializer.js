@@ -8,14 +8,11 @@ const MorseBuffer = require('./morse-buffer');
 const MorseStreamer = require('./morse-streamer');
 const Oscillator = require('./oscillator');
 
-const IMAGE_WIDTH = 4032;
-const IMAGE_HEIGHT = 2548;
+const { IMAGE_WIDTH, IMAGE_HEIGHT, MORSE_INTERVAL_MS } = require('./constants');
 const IMAGE_ASPECT_RATIO = IMAGE_WIDTH / IMAGE_HEIGHT;
 
 const BACKGROUND_DIV_ID = 'background';
 const CANVAS_ID = 'lights';
-
-const MORSE_INTERVAL_MS = 100;
 
 function constructLights(canvas, blobs) {
   return blobs.map((blob) => {
@@ -66,40 +63,28 @@ window.onload = () => {
   const leftMorseBuffer1 = new MorseBuffer();
   const leftMorseStreamer1 = new MorseStreamer(leftMorseBuffer1, MORSE_INTERVAL_MS);
   const leftOscillator1 = new Oscillator(AudioContextSingleton, 659.25);
-  const leftCrane1 = new Crane('left_1', leftCrane1Lights, leftOscillator1);
+  const leftCrane1 = new Crane('left_1', leftCrane1Lights, leftOscillator1, leftMorseStreamer1);
 
   const leftMorseBuffer2 = new MorseBuffer();
   const leftMorseStreamer2 = new MorseStreamer(leftMorseBuffer2, MORSE_INTERVAL_MS);
   const leftOscillator2 = new Oscillator(AudioContextSingleton, 523.25);
-  const leftCrane2 = new Crane('left_2', leftCrane2Lights, leftOscillator2);
+  const leftCrane2 = new Crane('left_2', leftCrane2Lights, leftOscillator2, leftMorseStreamer2);
 
   const centerMorseBuffer = new MorseBuffer();
   const centerMorseStreamer = new MorseStreamer(centerMorseBuffer, MORSE_INTERVAL_MS);
   const centerOscillator = new Oscillator(AudioContextSingleton, 440);
-  const centerCrane = new Crane('center', centerCraneLights, centerOscillator);
+  const centerCrane = new Crane('center', centerCraneLights, centerOscillator, centerMorseStreamer);
 
   const rightMorseBuffer = new MorseBuffer();
   const rightMorseStreamer = new MorseStreamer(rightMorseBuffer, MORSE_INTERVAL_MS);
   const rightOscillator = new Oscillator(AudioContextSingleton, 349.23);
-  const rightCrane = new Crane('right', rightCraneLights, rightOscillator);
+  const rightCrane = new Crane('right', rightCraneLights, rightOscillator, rightMorseStreamer);
 
   window.addEventListener('mouseup', () => {
     leftOscillator1.start();
     leftOscillator2.start();
     centerOscillator.start();
     rightOscillator.start();
-  });
-
-  // TODO: Make it possible to delay a callback. That way audio and visual can sync without
-  //       using setTimeout which is not great.
-  //
-  // TODO: Do I want all cranes to use the same morse streamer?
-  leftMorseStreamer1.registerCallback((bit) => {
-    if (bit === '1') {
-      setTimeout(() => { rightCrane.on(); }, 16);
-    } else if (bit === '0') {
-      setTimeout(() => { rightCrane.off(); }, 16);
-    }
   });
 
   // TODO: Silence and pause if move to a different tab

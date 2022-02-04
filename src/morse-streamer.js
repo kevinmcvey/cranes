@@ -11,21 +11,23 @@ class MorseStreamer {
     this.callbacks = [];
 
     // TODO: Mobile solution?
-    this.bindKeyup();
+    // this.bindKeyup();
   }
 
   bindKeyup() {
-    window.addEventListener('keyup', (event) => {
-      if (!this.buffer.isKnownCharacter(event.key)) {
-        return;
-      }
+    window.addEventListener('keyup', event => this.handleKeypress(event));
+  }
 
-      this.buffer.addToBuffer(event.key);
+  handleKeypress(event) {
+    if (!this.buffer.isKnownCharacter(event.key)) {
+      return;
+    }
 
-      if (!this.active) {
-        this.start();
-      }
-    });
+    this.buffer.addToBuffer(event.key);
+
+    if (!this.active) {
+      this.start();
+    }
   }
 
   registerCallback(callback) {
