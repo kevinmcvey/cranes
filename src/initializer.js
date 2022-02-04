@@ -63,31 +63,42 @@ window.onload = () => {
     ]
   );
 
-  const leftCrane1 = new Crane('left_1', leftCrane1Lights);
-  const leftCrane2 = new Crane('left_2', leftCrane2Lights);
-  const centerCrane = new Crane('center', centerCraneLights);
-  const rightCrane = new Crane('right', rightCraneLights);
+  const leftMorseBuffer1 = new MorseBuffer();
+  const leftMorseStreamer1 = new MorseStreamer(leftMorseBuffer1, MORSE_INTERVAL_MS);
+  const leftOscillator1 = new Oscillator(AudioContextSingleton, 659.25);
+  const leftCrane1 = new Crane('left_1', leftCrane1Lights, leftOscillator1);
 
-  const morseBuffer = new MorseBuffer();
-  const morseStreamer = new MorseStreamer(morseBuffer, MORSE_INTERVAL_MS);
+  const leftMorseBuffer2 = new MorseBuffer();
+  const leftMorseStreamer2 = new MorseStreamer(leftMorseBuffer2, MORSE_INTERVAL_MS);
+  const leftOscillator2 = new Oscillator(AudioContextSingleton, 523.25);
+  const leftCrane2 = new Crane('left_2', leftCrane2Lights, leftOscillator2);
 
-  const oscillator = new Oscillator(AudioContextSingleton, 641); // 300 sounds nice too
+  const centerMorseBuffer = new MorseBuffer();
+  const centerMorseStreamer = new MorseStreamer(centerMorseBuffer, MORSE_INTERVAL_MS);
+  const centerOscillator = new Oscillator(AudioContextSingleton, 440);
+  const centerCrane = new Crane('center', centerCraneLights, centerOscillator);
+
+  const rightMorseBuffer = new MorseBuffer();
+  const rightMorseStreamer = new MorseStreamer(rightMorseBuffer, MORSE_INTERVAL_MS);
+  const rightOscillator = new Oscillator(AudioContextSingleton, 349.23);
+  const rightCrane = new Crane('right', rightCraneLights, rightOscillator);
 
   window.addEventListener('mouseup', () => {
-    oscillator.start();
+    leftOscillator1.start();
+    leftOscillator2.start();
+    centerOscillator.start();
+    rightOscillator.start();
   });
-
-  window.oscillator = oscillator;
 
   // TODO: Make it possible to delay a callback. That way audio and visual can sync without
   //       using setTimeout which is not great.
-  morseStreamer.registerCallback((bit) => {
+  //
+  // TODO: Do I want all cranes to use the same morse streamer?
+  leftMorseStreamer1.registerCallback((bit) => {
     if (bit === '1') {
-      setTimeout(() => { leftCrane1.on(); }, 16);
-      oscillator.setGain(0.1);
+      setTimeout(() => { rightCrane.on(); }, 16);
     } else if (bit === '0') {
-      setTimeout(() => { leftCrane1.off(); }, 16);
-      oscillator.setGain(0.0);
+      setTimeout(() => { rightCrane.off(); }, 16);
     }
   });
 
