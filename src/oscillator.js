@@ -1,7 +1,6 @@
 'use strict';
 
-// To reduce "pop" sounds when gain adjusts, take this time to linearly adjust
-const GAIN_ADJUSTMENT_RAMP_MS = 16;
+const { GAIN_ADJUSTMENT_RAMP_MS } = require('./constants');
 
 class Oscillator {
   constructor(AudioContextSingleton, frequency) {
