@@ -47,7 +47,13 @@ class Crane {
       this.on();
     } else if (bit === '0') {
       this.off();
+    } else if (bit === 'END') {
+      this.off();
     }
+  }
+
+  handleKeypress(event) {
+    return this.morseStreamer.handleKeypress(event);
   }
 }
 

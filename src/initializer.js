@@ -2,6 +2,7 @@
 
 const AudioContextSingleton = require('./audio-context-singleton');
 const CenteredHtml = require('./centered-html');
+const Controller = require('./controller');
 const Crane = require('./crane');
 const Light = require('./light');
 const MorseBuffer = require('./morse-buffer');
@@ -55,8 +56,8 @@ window.onload = () => {
   const rightCraneLights = constructLights(
     canvas,
     [
-      { cx: 3492, cy: 1344, r: 25, state: 'off' },
-      { cx: 3225, cy: 1361, r: 25, state: 'off' },
+      { cx: 3492, cy: 1344, r: 25, state: 'on' },
+      { cx: 3225, cy: 1361, r: 25, state: 'on' },
     ]
   );
 
@@ -80,6 +81,9 @@ window.onload = () => {
   const rightOscillator = new Oscillator(AudioContextSingleton, 349.23);
   const rightCrane = new Crane('right', rightCraneLights, rightOscillator, rightMorseStreamer);
 
+  const controller = new Controller([leftCrane1, leftCrane2, centerCrane, rightCrane]);
+
+  // TODO: Test on safari whether I can move this Audio initializer elsewhere.
   window.addEventListener('mouseup', () => {
     leftOscillator1.start();
     leftOscillator2.start();

@@ -9,13 +9,6 @@ class MorseStreamer {
     this.timeOfLastBit = -1;
 
     this.callbacks = [];
-
-    // TODO: Mobile solution?
-    // this.bindKeyup();
-  }
-
-  bindKeyup() {
-    window.addEventListener('keyup', event => this.handleKeypress(event));
   }
 
   handleKeypress(event) {
@@ -45,7 +38,7 @@ class MorseStreamer {
 
   stop() {
     this.active = false;
-    this.handleBit('0');
+    this.handleBit('END');
   }
 
   resetTimer() {
