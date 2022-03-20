@@ -64,24 +64,31 @@ window.onload = () => {
   const leftMorseBuffer1 = new MorseBuffer();
   const leftMorseStreamer1 = new MorseStreamer(leftMorseBuffer1, MORSE_INTERVAL_MS);
   const leftOscillator1 = new Oscillator(AudioContextSingleton, 659.25);
-  const leftCrane1 = new Crane('left_1', leftCrane1Lights, leftOscillator1, leftMorseStreamer1);
+  const leftCrane1 = new Crane('left_1', leftCrane1Lights, leftOscillator1, leftMorseStreamer1, 950);
 
   const leftMorseBuffer2 = new MorseBuffer();
   const leftMorseStreamer2 = new MorseStreamer(leftMorseBuffer2, MORSE_INTERVAL_MS);
   const leftOscillator2 = new Oscillator(AudioContextSingleton, 523.25);
-  const leftCrane2 = new Crane('left_2', leftCrane2Lights, leftOscillator2, leftMorseStreamer2);
+  const leftCrane2 = new Crane('left_2', leftCrane2Lights, leftOscillator2, leftMorseStreamer2, 900);
 
   const centerMorseBuffer = new MorseBuffer();
   const centerMorseStreamer = new MorseStreamer(centerMorseBuffer, MORSE_INTERVAL_MS);
   const centerOscillator = new Oscillator(AudioContextSingleton, 440);
-  const centerCrane = new Crane('center', centerCraneLights, centerOscillator, centerMorseStreamer);
+  const centerCrane = new Crane('center', centerCraneLights, centerOscillator, centerMorseStreamer, 1000);
 
   const rightMorseBuffer = new MorseBuffer();
   const rightMorseStreamer = new MorseStreamer(rightMorseBuffer, MORSE_INTERVAL_MS);
   const rightOscillator = new Oscillator(AudioContextSingleton, 349.23);
-  const rightCrane = new Crane('right', rightCraneLights, rightOscillator, rightMorseStreamer);
+  const rightCrane = new Crane('right', rightCraneLights, rightOscillator, rightMorseStreamer, 1100);
 
   const controller = new Controller([leftCrane1, leftCrane2, centerCrane, rightCrane]);
+
+  // TODO: Click to select a crane
+  // TODO: When one crane speaks, the rest stop idling. Then when finished, they all begin again.
+  leftCrane1.startIdling();
+  leftCrane2.startIdling();
+  centerCrane.startIdling();
+  rightCrane.startIdling();
 
   // TODO: Test on safari whether I can move this Audio initializer elsewhere.
   window.addEventListener('mouseup', () => {
