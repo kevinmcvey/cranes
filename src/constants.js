@@ -9,5 +9,11 @@ module.exports = {
 
   // Size of the cranes image in pixels
   IMAGE_WIDTH: 4032,
-  IMAGE_HEIGHT: 2548
+  IMAGE_HEIGHT: 2548,
+
+  CRANE_STATES: {
+    muted: 'MUTED',
+    idling: 'IDLING',
+    active: 'ACTIVE',
+  }
 };

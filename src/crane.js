@@ -1,19 +1,36 @@
 'use strict';
 
-const { GAIN_ADJUSTMENT_RAMP_MS } = require('./constants');
+const { CRANE_STATES, GAIN_ADJUSTMENT_RAMP_MS } = require('./constants');
 
 class Crane {
-  constructor(name, lights, oscillator, morseStreamer, idleIntervalMs) {
+  constructor(name, controller, lights, oscillator, morseStreamer, idleIntervalMs, boundingBox) {
     this.name = name;
+    this.controller = controller;
+
     this.lights = lights;
     this.oscillator = oscillator;
     this.morseStreamer = morseStreamer;
 
-    this.idling = false;
+    this.lastState = CRANE_STATES.muted;
+    this.state = CRANE_STATES.muted;
+
     this.timeOfLastIdleToggle = -1;
     this.idleIntervalMs = idleIntervalMs;
 
+    this.boundingBox = boundingBox;
+
     this.registerMorseCallback();
+    this.startIdleLoop();
+  }
+
+  setState(state) {
+    if (this.state === state) {
+      return;
+    }
+
+    this.state = state;
+
+    this.controller.handleStateChange(this.name, this.state);
   }
 
   on() {
@@ -48,8 +65,8 @@ class Crane {
     this.lights.forEach((light) => light.toggle());
   }
 
-  startIdling() {
-    this.idling = true;
+  startIdleLoop() {
+    this.setState(CRANE_STATES.idling);
     this.scheduleIdleFrame();
   }
 
@@ -58,8 +75,8 @@ class Crane {
   }
 
   idle(timestamp) {
-    if (!this.idling) {
-      return;
+    if (this.state !== CRANE_STATES.idling) {
+      return this.scheduleIdleFrame();
     }
 
     const justStarted = this.timeOfLastIdleToggle === -1;
@@ -73,9 +90,13 @@ class Crane {
     this.scheduleIdleFrame();
   }
 
-  stopIdling() {
-    this.idling = false;
+  mute() {
+    this.setState(CRANE_STATES.muted);
     this.turnOffLights();
+  }
+
+  unmute() {
+    this.setState(CRANE_STATES.idling);
   }
 
   registerMorseCallback() {
@@ -83,12 +104,18 @@ class Crane {
   }
 
   handleBit(bit) {
+    if (this.state !== CRANE_STATES.active) {
+      this.setState(CRANE_STATES.active);
+    }
+
     if (bit === '1') {
       this.on();
     } else if (bit === '0') {
       this.off();
     } else if (bit === 'END') {
       this.off();
+
+      this.setState(CRANE_STATES.idling);
     }
   }
 
